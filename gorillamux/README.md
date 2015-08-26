@@ -22,9 +22,11 @@ Use `curl` to test GET, POST and DELETE requests as follows:
 
 * `curl localhost:9000/products` should return all products stored in memory
 
-* `curl localhost:9000/product/01` should return a product with id `01` if present else return a message indicating no such product present
+* `curl localhost:9000/product/P001` should return a product with id `P001` if present else return a message indicating no such product present
 
-* `curl -H "Content-Type: application/json" -X POST -d '{"id":"01","desc":"Product 01","qty":20}' http://localhost:9000/product/01` should add a new product (or replace existing one) with id `01`
+* `curl -H "Content-Type: application/json" -X POST -d '{"name":"Prod01","desc":"Product 01","qty":20}' http://localhost:9000/product` should add a new product
 
-* `curl -X DELETE http://localhost:9000/product/01` should remove the product with id `01` if present 
+* `curl -H "Content-Type: application/json" -X PUT -d '{"name":"Prod02","desc":"Product 02","qty":40}' http://localhost:9000/product/P001` should replace existing product with id `P001` if it exists else return a message indicating no such product present
+
+* `curl -X DELETE http://localhost:9000/product/P001` should remove the product with id `P001` if present else return a message indicating no such product present
 
