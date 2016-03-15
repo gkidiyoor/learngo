@@ -41,14 +41,6 @@ func executeCommand(client *ssh.Client, env map[string]string, command string) (
 	}
 	defer session.Close()
 
-	//fmt.Println("Setting up session IO")
-	//err = configureSessionIO(session)
-	//if err != nil {
-//		fmt.Println("Unable to set up session IO")
-//		return err
-//	}
-//	fmt.Println("Done setting up session IO")
-
 	if len(env) > 0 {
 		err = configureSessionEnv(session, env)
 		if err != nil {
@@ -110,43 +102,5 @@ func configureSessionEnv(session *ssh.Session, env map[string]string) error {
 	}
 
 	fmt.Println("Done setting environment variables")
-	return nil
-}
-
-func configureSessionIO(session *ssh.Session) error {
-	fmt.Println("Requesting Pseudo Terminal")
-	if err := session.RequestPty("xterm", 80, 40, modes); err != nil {
-		fmt.Println("Unable to request Pseudo Terminal")
-		fmt.Println("Error : ", err.Error())
-		return err
-	}
-
-	fmt.Println("Setting up STDIN")
-	stdin, err := session.StdinPipe()
-	if err != nil {
-		fmt.Println("Unable to setup STDIN")
-		fmt.Println("Error : ", err.Error())
-		return err
-	}
-	go io.Copy(stdin, os.Stdin)
-
-	fmt.Println("Setting up STDOUT")
-	stdout, err := session.StdoutPipe()
-	if err != nil {
-		fmt.Println("Unable to setup STDOUT")
-		fmt.Println("Error : ", err.Error())	
-		return err
-	}
-	go io.Copy(os.Stdout, stdout)
-
-	fmt.Println("Setting up STDERR")
-	stderr, err := session.StderrPipe()
-	if err != nil {
-		fmt.Println("Unable to setup STDERR")
-		fmt.Println("Error : ", err.Error())
-		return err
-	}
-	go io.Copy(os.Stderr, stderr)
-
 	return nil
 }
