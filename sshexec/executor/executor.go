@@ -22,7 +22,8 @@ func Execute(config *ssh.ClientConfig, server string, env map[string]string, com
 	}
 
 	for _, command := range commands {
-		err := executeCommand(client, env, command)
+		err, output := executeCommand(client, env, command)
+		fmt.Println("output : " + output)
 		if err != nil {
 			fmt.Println("Unable to execute commands on : ", server)
 			return err
@@ -32,7 +33,7 @@ func Execute(config *ssh.ClientConfig, server string, env map[string]string, com
 	return nil
 }
 
-func executeCommand(client *ssh.Client, env map[string]string, command string) error {
+func executeCommand(client *ssh.Client, env map[string]string, command string) (error, string) {
 	//session, err := createSession(client)
 	session, err := client.NewSession()
 	if err != nil {
@@ -56,7 +57,7 @@ func executeCommand(client *ssh.Client, env map[string]string, command string) e
 	}
 
 	fmt.Println("Begin executing :", command)
-	fmt.Println("=========>")
+
 
 	var b bytes.Buffer
 	session.Stdout = &b
@@ -67,10 +68,10 @@ func executeCommand(client *ssh.Client, env map[string]string, command string) e
 		fmt.Println("Error : ", err.Error())
 		return err
 	}
-	fmt.Println("<=========")
+
 	fmt.Println("End executing :", command)
 	fmt.Println(b.String())
-	return nil
+	return nil, b.String()
 }
 
 func connect(config *ssh.ClientConfig, server string) (*ssh.Client, error) {
@@ -133,7 +134,7 @@ func configureSessionIO(session *ssh.Session) error {
 	stdout, err := session.StdoutPipe()
 	if err != nil {
 		fmt.Println("Unable to setup STDOUT")
-		fmt.Println("Error : ", err.Error())
+		fmt.Println("Error : ", err.Error())	
 		return err
 	}
 	go io.Copy(os.Stdout, stdout)
