@@ -37,7 +37,7 @@ func executeCommand(client *ssh.Client, env map[string]string, command string) (
 	//session, err := createSession(client)
 	session, err := client.NewSession()
 	if err != nil {
-		return err
+		return err, ""
 	}
 	defer session.Close()
 
@@ -52,7 +52,7 @@ func executeCommand(client *ssh.Client, env map[string]string, command string) (
 	if len(env) > 0 {
 		err = configureSessionEnv(session, env)
 		if err != nil {
-			return err
+			return err, ""
 		}
 	}
 
@@ -66,7 +66,7 @@ func executeCommand(client *ssh.Client, env map[string]string, command string) (
 	if err != nil {
 		fmt.Println("Error executing command: ", command)
 		fmt.Println("Error : ", err.Error())
-		return err
+		return err, ""
 	}
 
 	fmt.Println("End executing :", command)
