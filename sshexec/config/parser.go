@@ -36,6 +36,17 @@ func ReadConfig(file string) (*Config, error) {
 	return &config, nil
 }
 
+func GetConfigObj(authtype string, username string, privatekeyfile string, portno string) (*Config){
+
+	execConfig := Config{
+		AuthType: authtype,
+		Username: username,
+		PrivateKeyFile: privatekeyfile,
+		Port: portno,
+	}
+	return &execConfig
+}
+
 func getCurrentUser() (*user.User, error) {
 	usr, err := user.Current()
 	if err != nil {

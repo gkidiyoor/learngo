@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-
+	"bytes"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -33,19 +33,20 @@ func Execute(config *ssh.ClientConfig, server string, env map[string]string, com
 }
 
 func executeCommand(client *ssh.Client, env map[string]string, command string) error {
-	session, err := createSession(client)
+	//session, err := createSession(client)
+	session, err := client.NewSession()
 	if err != nil {
 		return err
 	}
 	defer session.Close()
 
-	fmt.Println("Setting up session IO")
-	err = configureSessionIO(session)
-	if err != nil {
-		fmt.Println("Unable to set up session IO")
-		return err
-	}
-	fmt.Println("Done setting up session IO")
+	//fmt.Println("Setting up session IO")
+	//err = configureSessionIO(session)
+	//if err != nil {
+//		fmt.Println("Unable to set up session IO")
+//		return err
+//	}
+//	fmt.Println("Done setting up session IO")
 
 	if len(env) > 0 {
 		err = configureSessionEnv(session, env)
@@ -56,7 +57,11 @@ func executeCommand(client *ssh.Client, env map[string]string, command string) e
 
 	fmt.Println("Begin executing :", command)
 	fmt.Println("=========>")
+
+	var b bytes.Buffer
+	session.Stdout = &b
 	err = session.Run(command)
+
 	if err != nil {
 		fmt.Println("Error executing command: ", command)
 		fmt.Println("Error : ", err.Error())
@@ -64,7 +69,7 @@ func executeCommand(client *ssh.Client, env map[string]string, command string) e
 	}
 	fmt.Println("<=========")
 	fmt.Println("End executing :", command)
-
+	fmt.Println(b.String())
 	return nil
 }
 
