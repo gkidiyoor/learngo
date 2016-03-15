@@ -2,8 +2,6 @@ package executor
 
 import (
 	"fmt"
-	"io"
-	"os"
 	"bytes"
 	"golang.org/x/crypto/ssh"
 )
